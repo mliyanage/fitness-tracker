@@ -3,7 +3,6 @@ import { User } from "./user.model";
 import { Subject } from "rxjs";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
-
 @Injectable()
 export class AuthService {
   authChange = new Subject<boolean>();

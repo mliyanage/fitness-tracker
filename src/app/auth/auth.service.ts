@@ -17,12 +17,26 @@ export class AuthService {
     private trainingService: TrainingService
   ) {}
 
+  initAuthListner() {
+    this.angularFireAuth.authState.subscribe(user => {
+      if (user) {
+        this.isAuthenticated = true;
+        this.authChange.next(true);
+        this.router.navigate(["/training"]);
+      } else {
+        this.trainingService.cancelSubscriptions();
+        this.authChange.next(false);
+        this.router.navigate(["/login"]);
+        this.isAuthenticated = false;
+      }
+    });
+  }
   registerUser(authData: AuthData) {
     this.angularFireAuth
       .createUserWithEmailAndPassword(authData.email, authData.password)
       .then(result => {
         console.log(result);
-        this.onSuccessfulAuth();
+        //this.onSuccessfulAuth();
       })
       .catch(error => {
         console.log(error);
@@ -34,7 +48,7 @@ export class AuthService {
       .signInWithEmailAndPassword(authData.email, authData.password)
       .then(result => {
         console.log(result);
-        this.onSuccessfulAuth();
+        //this.onSuccessfulAuth();
       })
       .catch(error => {
         console.log(error);
@@ -42,20 +56,21 @@ export class AuthService {
   }
 
   logout() {
-    this.trainingService.cancelSubscriptions();
+    //this.trainingService.cancelSubscriptions();
     this.angularFireAuth.signOut();
-    this.authChange.next(false);
-    this.router.navigate(["/login"]);
-    this.isAuthenticated = false;
+
+    // this.authChange.next(false);
+    // this.router.navigate(["/login"]);
+    // this.isAuthenticated = false;
   }
 
   isAuth() {
     return this.isAuthenticated;
   }
 
-  private onSuccessfulAuth() {
-    this.isAuthenticated = true;
-    this.authChange.next(true);
-    this.router.navigate(["/training"]);
-  }
+  //private onSuccessfulAuth() {
+  // this.isAuthenticated = true;
+  // this.authChange.next(true);
+  // this.router.navigate(["/training"]);
+  //}
 }

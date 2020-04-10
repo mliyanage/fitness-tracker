@@ -1,3 +1,4 @@
+import { UIService } from "src/app/shared/ui.service";
 import { AngularFirestore } from "@angular/fire/firestore";
 import "firebase/firestore";
 import { Exercise } from "./exercise.model";
@@ -14,15 +15,17 @@ export class TrainingService {
   firebaseSubs: Subscription[] = [];
   private runningExercise: Exercise;
 
-  constructor(private db: AngularFirestore) {}
+  constructor(private db: AngularFirestore, private uiService: UIService) {}
 
   getAvailableExercises() {
+    this.uiService.loadinStateChanged.next(true);
     this.firebaseSubs.push(
       this.db
         .collection("availableExercises")
         .snapshotChanges()
         .pipe(
           map(docArray => {
+            //throw new Error();
             return docArray.map(doc => {
               return {
                 id: doc.payload.doc.id,
@@ -31,10 +34,21 @@ export class TrainingService {
             });
           })
         )
-        .subscribe((exercises: Exercise[]) => {
-          this.availableEcercises = exercises;
-          this.exercisesChanged.next([...this.availableEcercises]);
-        })
+        .subscribe(
+          (exercises: Exercise[]) => {
+            this.uiService.loadinStateChanged.next(false);
+            this.availableEcercises = exercises;
+            this.exercisesChanged.next([...this.availableEcercises]);
+          },
+          error => {
+            this.uiService.loadinStateChanged.next(false);
+            this.uiService.showSnackbar(
+              "Fetching exercises faild, please try again later",
+              null,
+              3000
+            );
+          }
+        )
     );
   }
 

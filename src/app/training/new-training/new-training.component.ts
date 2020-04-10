@@ -1,3 +1,4 @@
+import { UIService } from "src/app/shared/ui.service";
 import { NgForm } from "@angular/forms";
 import { Exercise } from "./../exercise.model";
 import { TrainingService } from "./../training.service";
@@ -18,14 +19,27 @@ interface Food {
 })
 export class NewTrainingComponent implements OnInit, OnDestroy {
   exercises: Exercise[];
-  exerciseSubscription: Subscription;
+  private exerciseSubscription: Subscription;
+  private loadingSubs: Subscription;
+  isLoading;
 
-  constructor(private trainingService: TrainingService) {}
+  constructor(
+    private trainingService: TrainingService,
+    private uiService: UIService
+  ) {}
 
   ngOnInit(): void {
+    this.loadingSubs = this.uiService.loadinStateChanged.subscribe(isLoaded => {
+      this.isLoading = isLoaded;
+    });
     this.exerciseSubscription = this.trainingService.exercisesChanged.subscribe(
       exercises => (this.exercises = exercises)
     );
+
+    this.fetchExercises();
+  }
+
+  fetchExercises() {
     this.trainingService.getAvailableExercises();
   }
 
@@ -35,5 +49,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.exerciseSubscription.unsubscribe();
+    this.loadingSubs.unsubscribe();
   }
 }

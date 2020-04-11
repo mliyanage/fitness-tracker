@@ -7,7 +7,7 @@ import { UIService } from "src/app/shared/ui.service";
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
-  styleUrls: ["./login.component.scss"]
+  styleUrls: ["./login.component.scss"],
 })
 export class LoginComponent implements OnInit, OnDestroy {
   loginForm: FormGroup;
@@ -17,26 +17,26 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadingSubs = this.uiService.loadinStateChanged.subscribe(
-      isLoading => {
+      (isLoading) => {
         this.isLoading = isLoading;
       }
     );
     this.loginForm = new FormGroup({
       email: new FormControl("", {
-        validators: [Validators.required, Validators.email]
+        validators: [Validators.required, Validators.email],
       }),
-      password: new FormControl("", { validators: [Validators.required] })
+      password: new FormControl("", { validators: [Validators.required] }),
     });
   }
 
   onSubmit() {
     this.authService.login({
       email: this.loginForm.value.email,
-      password: this.loginForm.value.password
+      password: this.loginForm.value.password,
     });
   }
 
   ngOnDestroy() {
-    this.loadingSubs.unsubscribe();
+    if (this.loadingSubs) this.loadingSubs.unsubscribe();
   }
 }

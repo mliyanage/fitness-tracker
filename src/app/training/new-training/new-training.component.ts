@@ -15,7 +15,7 @@ interface Food {
 @Component({
   selector: "app-new-training",
   templateUrl: "./new-training.component.html",
-  styleUrls: ["./new-training.component.scss"]
+  styleUrls: ["./new-training.component.scss"],
 })
 export class NewTrainingComponent implements OnInit, OnDestroy {
   exercises: Exercise[];
@@ -29,11 +29,13 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.loadingSubs = this.uiService.loadinStateChanged.subscribe(isLoaded => {
-      this.isLoading = isLoaded;
-    });
+    this.loadingSubs = this.uiService.loadinStateChanged.subscribe(
+      (isLoaded) => {
+        this.isLoading = isLoaded;
+      }
+    );
     this.exerciseSubscription = this.trainingService.exercisesChanged.subscribe(
-      exercises => (this.exercises = exercises)
+      (exercises) => (this.exercises = exercises)
     );
 
     this.fetchExercises();
@@ -48,7 +50,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.exerciseSubscription.unsubscribe();
-    this.loadingSubs.unsubscribe();
+    if (this.exerciseSubscription) this.exerciseSubscription.unsubscribe();
+    if (this.loadingSubs) this.loadingSubs.unsubscribe();
   }
 }

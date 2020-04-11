@@ -7,7 +7,7 @@ import { NgForm } from "@angular/forms";
 @Component({
   selector: "app-signup",
   templateUrl: "./signup.component.html",
-  styleUrls: ["./signup.component.scss"]
+  styleUrls: ["./signup.component.scss"],
 })
 export class SignupComponent implements OnInit, OnDestroy {
   maxDate;
@@ -23,17 +23,17 @@ export class SignupComponent implements OnInit, OnDestroy {
 
   onSubmit(form: NgForm) {
     this.loadingSubs = this.uiService.loadinStateChanged.subscribe(
-      isLoading => {
+      (isLoading) => {
         this.isLoading = isLoading;
       }
     );
     this.authService.registerUser({
       email: form.value.email,
-      password: form.value.password
+      password: form.value.password,
     });
   }
 
   ngOnDestroy() {
-    this.loadingSubs.unsubscribe();
+    if (this.loadingSubs) this.loadingSubs.unsubscribe();
   }
 }

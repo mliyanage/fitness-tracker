@@ -6,7 +6,7 @@ import {
   OnInit,
   ViewChild,
   AfterViewInit,
-  OnDestroy
+  OnDestroy,
 } from "@angular/core";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatSort } from "@angular/material/sort";
@@ -15,7 +15,7 @@ import { MatPaginator } from "@angular/material/paginator";
 @Component({
   selector: "app-past-trainings",
   templateUrl: "./past-trainings.component.html",
-  styleUrls: ["./past-trainings.component.scss"]
+  styleUrls: ["./past-trainings.component.scss"],
 })
 export class PastTrainingsComponent
   implements OnInit, AfterViewInit, OnDestroy {
@@ -47,6 +47,6 @@ export class PastTrainingsComponent
   }
 
   ngOnDestroy() {
-    this.exChangedSubscription.unsubscribe();
+    if (this.exChangedSubscription) this.exChangedSubscription.unsubscribe();
   }
 }
